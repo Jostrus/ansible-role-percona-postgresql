@@ -1,0 +1,57 @@
+---
+version: 16
+
+# Postgres connection settings.
+postgres_port: 5432
+postgres_listen_addresses: localhost
+
+postgres_package: 
+  - percona-ppg-server-{{ version}}
+  - python3-pip
+  - python3-dev
+  - binutils
+  - percona-patroni
+  - etcd 
+  - etcd-server 
+  - etcd-client
+  - percona-pgbackrest
+
+postgresql_cluster_name: PostgreSQL-Cluster
+
+all_fail_count: 0
+
+new_nodes: []
+
+loop_through_hosts: 0
+# Databases.
+database_creation: true
+psql_databases:
+  - name: appdb
+#   lc_collate: # defaults to 'en_US.UTF-8'
+#   lc_ctype: # defaults to 'en_US.UTF-8'
+#   encoding: # defaults to 'UTF-8'
+#   template: # defaults to 'template0'
+#   conn_limit: # defauls to 10
+#   owner: # defaults to postgresql_user
+#   state: # defaults to 'present'
+
+# Users.
+users_creation: true
+
+psql_users:
+  - name: appuser
+    password: AppUser#Secret@123
+#   priv: # defaults to not set
+#   role_attr_flags: # defaults to not set
+    db: "appdb"
+#   state: # defaults to 'present'
+  - name: monitoring
+    password: Monitoring#Secret@123
+#   priv: # defaults to not set
+#   db: # defaults to not set
+
+
+# Postgres cluster settings.
+replication: false
+replica_user: replicant
+replica_pass: Rep@1234

@@ -1,0 +1,9 @@
+name: '{{ ansible_hostname }}'
+initial-cluster-token: {{ postgresql_cluster_name }}
+initial-cluster-state: {{ etcd_state | default('existing') }}
+initial-cluster: "{% for i in host_array %}{{ groups['postgres'][i|int] }}=http://{{ hostvars[groups['postgres'][i|int]].ansible_default_ipv4.address }}:2380{% if not loop.last %},{% endif %}{% endfor %}"
+data-dir: /var/lib/etcd
+initial-advertise-peer-urls: http://{{ ansible_default_ipv4.address }}:2380 
+listen-peer-urls: http://{{ ansible_default_ipv4.address }}:2380
+advertise-client-urls: http://{{ ansible_default_ipv4.address }}:2379
+listen-client-urls: http://{{ ansible_default_ipv4.address }}:2379

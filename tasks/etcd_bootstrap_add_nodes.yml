@@ -1,0 +1,27 @@
+- name: etcd -  Pause for 5 seconds so etcd can form
+  ansible.builtin.pause:
+    seconds: 5
+    echo: no
+      
+- name: etcd - add {{ groups['postgres'][item | int] }} to Cluster
+  ansible.builtin.command: "etcdctl member add {{ groups['postgres'][item | int] }} --peer-urls=http://{{ hostvars[groups['postgres'][item | int]].ansible_default_ipv4.address }}:2380 --endpoints={{ ansible_default_ipv4.address }}:2379"
+  when: groups['postgres'][0] == inventory_hostname
+
+- name: etcd - Set Fact for config Template loop
+  ansible.builtin.set_fact:
+    etcd_state: existing
+
+- name: etcd - Template etcd config
+  ansible.builtin.template:
+    src: etc_etcd_etcd.conf.yaml
+    dest: /etc/etcd/etcd.conf.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  when: groups['postgres'][item | int] == inventory_hostname
+
+- name: etcd - Start etcd on Bootstraped Node
+  ansible.builtin.systemd_service:
+    state: started
+    name: etcd
+  when: groups['postgres'][item | int] == inventory_hostname
