@@ -2,3 +2,7 @@
   ansible.builtin.systemd_service:
     state: restarted
     name: etcd
+- name: Basic - clear postgresql dir
+  ansible.builtin.file:
+    state: absent
+    path: "/var/lib/postgresql/{{ version }}/main"

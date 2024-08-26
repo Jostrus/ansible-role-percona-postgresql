@@ -18,6 +18,10 @@ postgres_package:
 
 postgresql_cluster_name: PostgreSQL-Cluster
 
+postgresql_data_dir: /var/lib/postgresql/16/main
+
+postgresql_bin_dir: /usr/lib/postgresql/16/bin
+
 all_fail_count: 0
 
 new_nodes: []
